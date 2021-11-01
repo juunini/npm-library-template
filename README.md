@@ -45,3 +45,4 @@ yarn add /Users/juunini/Desktop/your-project-name/package.tgz
 ## 주의사항
 
 `postinstall` scripts에는 의존성을 필요로 하는 무언가를 넣지 마세요.  
+예를들어, `"postinstall": "husky install"`
