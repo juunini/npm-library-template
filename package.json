@@ -1,0 +1,45 @@
+{
+  "name": "your-project-name",
+  "version": "1.0.0",
+  "description": "Your project description",
+  "author": "your name",
+  "license": "MIT",
+  "repository": "repository url",
+  "homepage": "homepage url",
+  "main": "lib/index.js",
+  "unpkg": "dist/your-project-name.development.js",
+  "types": "types/index.d.ts",
+  "module": "es/index.js",
+  "sideEffects": [
+    "es/index.js",
+    "lib/index.js"
+  ],
+  "scripts": {
+    "test": "is-ci \"test:ci\" \"test:dev\"",
+    "test:dev": "npm run test:types && npm run test:format && npm run test:eslint && jest --watch",
+    "test:ci": "npm run test:types && npm run test:format && npm run test:eslint && jest",
+    "test:coverage": "yarn test:ci; open coverage/lcov-report/index.html",
+    "test:format": "yarn prettier --check",
+    "test:types": "tsc",
+    "test:eslint": "eslint --ext .ts,.tsx ./src",
+    "build": "yarn build:commonjs && yarn build:es && yarn build:umd && yarn build:types",
+    "build:commonjs": "rimraf ./lib && cross-env BABEL_ENV=commonjs babel --extensions .ts,.tsx --ignore ./src/**/tests/**/* ./src --out-dir lib",
+    "build:es": "rimraf ./es && babel --extensions .ts,.tsx --ignore ./src/**/tests/**/* ./src --out-dir es",
+    "build:umd": "rimraf ./dist && cross-env NODE_ENV=production rollup -c && rollup-plugin-visualizer stats.json",
+    "build:types": "rimraf ./types && tsc --project ./tsconfig.types.json && replace 'import type' 'import' ./types -r --silent && replace 'export type' 'export' ./types -r --silent",
+    "watch": "yarn watch:commonjs & yarn watch:es & yarn watch:umd & yarn watch:types",
+    "watch:commonjs": "rimraf ./lib && cross-env BABEL_ENV=commonjs babel --watch --extensions .ts,.tsx --ignore ./src/**/tests/**/* ./src --out-dir lib",
+    "watch:es": "rimraf ./es && babel --watch --extensions .ts,.tsx --ignore ./src/**/tests/**/* ./src --out-dir es",
+    "watch:umd": "rimraf ./dist && cross-env NODE_ENV=production rollup -w -c && rollup-plugin-visualizer stats.json",
+    "watch:types": "rimraf ./types && tsc --watch --project ./tsconfig.types.json && replace 'import type' 'import' ./types -r --silent && replace 'export type' 'export' ./types -r --silent",
+    "now-build": "yarn && cd www && yarn && yarn build",
+    "start": "yarn watch",
+    "stats": "open ./stats.html"
+  },
+  "files": [
+    "dist",
+    "es",
+    "lib",
+    "types"
+  ]
+}
